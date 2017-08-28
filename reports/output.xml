@@ -1,0 +1,2919 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generated="20170828 14:31:55.482" generator="Robot 3.0.2 (Python 2.7.12 on linux2)">
+<suite source="/home/remaru/testing/test_task/tests/test.robot" id="s1" name="Test">
+<test id="s1-t1" name="Connect to Database">
+<kw name="Connect To Database Using Custom Params" library="DatabaseLibrary">
+<doc>Loads the DB API 2.0 module given `dbapiModuleName` then uses it to</doc>
+<arguments>
+<arg>${db_type}</arg>
+<arg>'${db_name}'</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.560" level="INFO">Executing : Connect To Database Using Custom Params : sqlite3.connect(db_api_2.connect('clients.db')) </msg>
+<status status="PASS" endtime="20170828 14:31:55.560" starttime="20170828 14:31:55.559"></status>
+</kw>
+<kw name="check_connection_to_databse" library="keywords">
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Проверка подключения к базе данных</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.561" starttime="20170828 14:31:55.561"></status>
+</kw>
+<kw name="Run Keyword And Ignore Error" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<arguments>
+<arg>query</arg>
+<arg>select * from balances limit 1</arg>
+</arguments>
+<assign>
+<var>${connection}</var>
+</assign>
+<kw name="Query" library="DatabaseLibrary">
+<doc>Uses the input `selectStatement` to query for the values that will be returned as a list of tuples. Set optional</doc>
+<arguments>
+<arg>select * from balances limit 1</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.562" level="INFO">Executing : Query  |  select * from balances limit 1 </msg>
+<status status="PASS" endtime="20170828 14:31:55.562" starttime="20170828 14:31:55.562"></status>
+</kw>
+<msg timestamp="20170828 14:31:55.563" level="INFO">${connection} = ('PASS', [(1, -5.0)])</msg>
+<status status="PASS" endtime="20170828 14:31:55.563" starttime="20170828 14:31:55.561"></status>
+</kw>
+<kw name="Should Not Be True" library="BuiltIn">
+<doc>Fails if the given condition is true.</doc>
+<arguments>
+<arg>'${connection[0]}'=='FAIL'</arg>
+<arg>База данных не подключена</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.563" starttime="20170828 14:31:55.563"></status>
+</kw>
+<status status="PASS" endtime="20170828 14:31:55.563" starttime="20170828 14:31:55.560"></status>
+</kw>
+<doc>Подключение к базе данных</doc>
+<tags>
+<tag>connect</tag>
+<tag>services</tag>
+</tags>
+<status status="PASS" endtime="20170828 14:31:55.563" critical="yes" starttime="20170828 14:31:55.558"></status>
+</test>
+<test id="s1-t2" name="Get Client ID and Balance">
+<kw name="Find Client With Positive Balance" library="finder">
+<assign>
+<var>${client}</var>
+</assign>
+<kw name="get_all_services" library="keywords">
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Получение всех услуг</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.565" starttime="20170828 14:31:55.564"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{header}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.565" level="INFO">&amp;{header} = { Content-Type=application/json }</msg>
+<status status="PASS" endtime="20170828 14:31:55.565" starttime="20170828 14:31:55.565"></status>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>session</arg>
+<arg>${session}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.565" level="INFO">Creating Session using : alias=session, url=http://localhost:5000, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20170828 14:31:55.566" starttime="20170828 14:31:55.565"></status>
+</kw>
+<kw name="Get Request" library="RequestsLibrary">
+<doc>Send a GET request on the session object found using the</doc>
+<arguments>
+<arg>session</arg>
+<arg>/services</arg>
+<arg>headers=${header}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.571" level="INFO">Get Request using : alias=session, uri=/services, headers={u'Content-Type': u'application/json'} json=None</msg>
+<msg timestamp="20170828 14:31:55.571" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.571" starttime="20170828 14:31:55.566"></status>
+</kw>
+<kw name="Parse Text" library="finder">
+<arguments>
+<arg>${resp.text}</arg>
+</arguments>
+<assign>
+<var>${resp text}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.572" level="INFO">${resp text} = {
+  "count": 5, 
+  "items": [
+    {
+      "cost": 1.2, 
+      "id": 1, 
+      "name": "Service #1"
+    }, 
+    {
+      "cost": 0.35, 
+      "id": 2, 
+      "name": "Service #2"
+    }, 
+    {
+      "co...</msg>
+<status status="PASS" endtime="20170828 14:31:55.572" starttime="20170828 14:31:55.572"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>${200}</arg>
+<arg>Запрос прошел неуспешно, статус-код = ${resp.status_code}. \nПодробнее: ${resp text}</arg>
+<arg>${false}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.573" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.573" starttime="20170828 14:31:55.572"></status>
+</kw>
+<kw name="Parse Json" library="HttpLibrary.HTTP">
+<doc>Parses the JSON document `json_string` and returns a data structure.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<assign>
+<var>${all_services}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.573" level="INFO">${all_services} = {u'count': 5, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}, {u'cost': 0.15, u'id': ...</msg>
+<status status="PASS" endtime="20170828 14:31:55.573" starttime="20170828 14:31:55.573"></status>
+</kw>
+<kw name="Return From Keyword" library="BuiltIn">
+<doc>Returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>${all_services}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.573" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20170828 14:31:55.574" starttime="20170828 14:31:55.573"></status>
+</kw>
+<status status="PASS" endtime="20170828 14:31:55.574" starttime="20170828 14:31:55.564"></status>
+</kw>
+<kw name="Query" library="DatabaseLibrary">
+<doc>Uses the input `selectStatement` to query for the values that will be returned as a list of tuples. Set optional</doc>
+<arguments>
+<arg>select * from balances where balance &gt; 0</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.574" level="INFO">Executing : Query  |  select * from balances where balance &gt; 0 </msg>
+<status status="PASS" endtime="20170828 14:31:55.574" starttime="20170828 14:31:55.574"></status>
+</kw>
+<kw name="get_client_services" library="keywords">
+<arguments>
+<arg>3</arg>
+</arguments>
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Получение услуг клиента</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.575" starttime="20170828 14:31:55.575"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{header}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.575" level="INFO">&amp;{header} = { Content-Type=application/json }</msg>
+<status status="PASS" endtime="20170828 14:31:55.575" starttime="20170828 14:31:55.575"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>client_id=${id}</arg>
+</arguments>
+<assign>
+<var>&amp;{data}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.576" level="INFO">&amp;{data} = { client_id=3 }</msg>
+<status status="PASS" endtime="20170828 14:31:55.576" starttime="20170828 14:31:55.575"></status>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>session</arg>
+<arg>${session}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.576" level="INFO">Creating Session using : alias=session, url=http://localhost:5000, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20170828 14:31:55.576" starttime="20170828 14:31:55.576"></status>
+</kw>
+<kw name="Post Request" library="RequestsLibrary">
+<doc>Send a POST request on the session object found using the</doc>
+<arguments>
+<arg>session</arg>
+<arg>/client/services</arg>
+<arg>data=${data}</arg>
+<arg>headers=${header}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.579" level="INFO">Post Request using : alias=session, uri=/client/services, data={"client_id": 3}, headers={u'Content-Type': u'application/json'}, files=None, allow_redirects=True </msg>
+<msg timestamp="20170828 14:31:55.579" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.579" starttime="20170828 14:31:55.576"></status>
+</kw>
+<kw name="Parse Text" library="finder">
+<arguments>
+<arg>${resp.text}</arg>
+</arguments>
+<assign>
+<var>${resp text}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.580" level="INFO">${resp text} = {
+  "count": 5, 
+  "items": [
+    {
+      "cost": 1.2, 
+      "id": 1, 
+      "name": "Service #1"
+    }, 
+    {
+      "cost": 0.35, 
+      "id": 2, 
+      "name": "Service #2"
+    }, 
+    {
+      "co...</msg>
+<status status="PASS" endtime="20170828 14:31:55.580" starttime="20170828 14:31:55.579"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>${200}</arg>
+<arg>Запрос прошел неуспешно, статус-код = ${resp.status_code}. \nПодробнее:\n${resp text}</arg>
+<arg>${false}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.580" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.581" starttime="20170828 14:31:55.580"></status>
+</kw>
+<kw name="Parse Json" library="HttpLibrary.HTTP">
+<doc>Parses the JSON document `json_string` and returns a data structure.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<assign>
+<var>${client_services}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.581" level="INFO">${client_services} = {u'count': 5, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}, {u'cost': 0.15, u'id': ...</msg>
+<status status="PASS" endtime="20170828 14:31:55.581" starttime="20170828 14:31:55.581"></status>
+</kw>
+<kw name="Return From Keyword" library="BuiltIn">
+<doc>Returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>${client_services}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.581" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20170828 14:31:55.581" starttime="20170828 14:31:55.581"></status>
+</kw>
+<status status="PASS" endtime="20170828 14:31:55.582" starttime="20170828 14:31:55.574"></status>
+</kw>
+<kw name="get_client_services" library="keywords">
+<arguments>
+<arg>4</arg>
+</arguments>
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Получение услуг клиента</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.582" starttime="20170828 14:31:55.582"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{header}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.583" level="INFO">&amp;{header} = { Content-Type=application/json }</msg>
+<status status="PASS" endtime="20170828 14:31:55.583" starttime="20170828 14:31:55.582"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>client_id=${id}</arg>
+</arguments>
+<assign>
+<var>&amp;{data}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.583" level="INFO">&amp;{data} = { client_id=4 }</msg>
+<status status="PASS" endtime="20170828 14:31:55.583" starttime="20170828 14:31:55.583"></status>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>session</arg>
+<arg>${session}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.583" level="INFO">Creating Session using : alias=session, url=http://localhost:5000, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20170828 14:31:55.584" starttime="20170828 14:31:55.583"></status>
+</kw>
+<kw name="Post Request" library="RequestsLibrary">
+<doc>Send a POST request on the session object found using the</doc>
+<arguments>
+<arg>session</arg>
+<arg>/client/services</arg>
+<arg>data=${data}</arg>
+<arg>headers=${header}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.587" level="INFO">Post Request using : alias=session, uri=/client/services, data={"client_id": 4}, headers={u'Content-Type': u'application/json'}, files=None, allow_redirects=True </msg>
+<msg timestamp="20170828 14:31:55.587" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.587" starttime="20170828 14:31:55.584"></status>
+</kw>
+<kw name="Parse Text" library="finder">
+<arguments>
+<arg>${resp.text}</arg>
+</arguments>
+<assign>
+<var>${resp text}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.588" level="INFO">${resp text} = {
+  "count": 5, 
+  "items": [
+    {
+      "cost": 1.2, 
+      "id": 1, 
+      "name": "Service #1"
+    }, 
+    {
+      "cost": 0.35, 
+      "id": 2, 
+      "name": "Service #2"
+    }, 
+    {
+      "co...</msg>
+<status status="PASS" endtime="20170828 14:31:55.588" starttime="20170828 14:31:55.587"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>${200}</arg>
+<arg>Запрос прошел неуспешно, статус-код = ${resp.status_code}. \nПодробнее:\n${resp text}</arg>
+<arg>${false}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.588" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.588" starttime="20170828 14:31:55.588"></status>
+</kw>
+<kw name="Parse Json" library="HttpLibrary.HTTP">
+<doc>Parses the JSON document `json_string` and returns a data structure.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<assign>
+<var>${client_services}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.590" level="INFO">${client_services} = {u'count': 5, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}, {u'cost': 0.15, u'id': ...</msg>
+<status status="PASS" endtime="20170828 14:31:55.590" starttime="20170828 14:31:55.589"></status>
+</kw>
+<kw name="Return From Keyword" library="BuiltIn">
+<doc>Returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>${client_services}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.590" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20170828 14:31:55.590" starttime="20170828 14:31:55.590"></status>
+</kw>
+<status status="PASS" endtime="20170828 14:31:55.590" starttime="20170828 14:31:55.582"></status>
+</kw>
+<kw name="get_client_services" library="keywords">
+<arguments>
+<arg>5</arg>
+</arguments>
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Получение услуг клиента</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.591" starttime="20170828 14:31:55.591"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{header}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.591" level="INFO">&amp;{header} = { Content-Type=application/json }</msg>
+<status status="PASS" endtime="20170828 14:31:55.591" starttime="20170828 14:31:55.591"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>client_id=${id}</arg>
+</arguments>
+<assign>
+<var>&amp;{data}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.592" level="INFO">&amp;{data} = { client_id=5 }</msg>
+<status status="PASS" endtime="20170828 14:31:55.592" starttime="20170828 14:31:55.591"></status>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>session</arg>
+<arg>${session}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.592" level="INFO">Creating Session using : alias=session, url=http://localhost:5000, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20170828 14:31:55.592" starttime="20170828 14:31:55.592"></status>
+</kw>
+<kw name="Post Request" library="RequestsLibrary">
+<doc>Send a POST request on the session object found using the</doc>
+<arguments>
+<arg>session</arg>
+<arg>/client/services</arg>
+<arg>data=${data}</arg>
+<arg>headers=${header}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.595" level="INFO">Post Request using : alias=session, uri=/client/services, data={"client_id": 5}, headers={u'Content-Type': u'application/json'}, files=None, allow_redirects=True </msg>
+<msg timestamp="20170828 14:31:55.596" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.596" starttime="20170828 14:31:55.592"></status>
+</kw>
+<kw name="Parse Text" library="finder">
+<arguments>
+<arg>${resp.text}</arg>
+</arguments>
+<assign>
+<var>${resp text}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.596" level="INFO">${resp text} = {
+  "count": 5, 
+  "items": [
+    {
+      "cost": 1.2, 
+      "id": 1, 
+      "name": "Service #1"
+    }, 
+    {
+      "cost": 0.35, 
+      "id": 2, 
+      "name": "Service #2"
+    }, 
+    {
+      "co...</msg>
+<status status="PASS" endtime="20170828 14:31:55.596" starttime="20170828 14:31:55.596"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>${200}</arg>
+<arg>Запрос прошел неуспешно, статус-код = ${resp.status_code}. \nПодробнее:\n${resp text}</arg>
+<arg>${false}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.597" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.597" starttime="20170828 14:31:55.596"></status>
+</kw>
+<kw name="Parse Json" library="HttpLibrary.HTTP">
+<doc>Parses the JSON document `json_string` and returns a data structure.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<assign>
+<var>${client_services}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.597" level="INFO">${client_services} = {u'count': 5, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}, {u'cost': 0.15, u'id': ...</msg>
+<status status="PASS" endtime="20170828 14:31:55.597" starttime="20170828 14:31:55.597"></status>
+</kw>
+<kw name="Return From Keyword" library="BuiltIn">
+<doc>Returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>${client_services}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.598" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20170828 14:31:55.598" starttime="20170828 14:31:55.597"></status>
+</kw>
+<status status="PASS" endtime="20170828 14:31:55.598" starttime="20170828 14:31:55.591"></status>
+</kw>
+<kw name="get_client_services" library="keywords">
+<arguments>
+<arg>6</arg>
+</arguments>
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Получение услуг клиента</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.598" starttime="20170828 14:31:55.598"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{header}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.598" level="INFO">&amp;{header} = { Content-Type=application/json }</msg>
+<status status="PASS" endtime="20170828 14:31:55.599" starttime="20170828 14:31:55.598"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>client_id=${id}</arg>
+</arguments>
+<assign>
+<var>&amp;{data}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.599" level="INFO">&amp;{data} = { client_id=6 }</msg>
+<status status="PASS" endtime="20170828 14:31:55.599" starttime="20170828 14:31:55.599"></status>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>session</arg>
+<arg>${session}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.599" level="INFO">Creating Session using : alias=session, url=http://localhost:5000, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20170828 14:31:55.599" starttime="20170828 14:31:55.599"></status>
+</kw>
+<kw name="Post Request" library="RequestsLibrary">
+<doc>Send a POST request on the session object found using the</doc>
+<arguments>
+<arg>session</arg>
+<arg>/client/services</arg>
+<arg>data=${data}</arg>
+<arg>headers=${header}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.602" level="INFO">Post Request using : alias=session, uri=/client/services, data={"client_id": 6}, headers={u'Content-Type': u'application/json'}, files=None, allow_redirects=True </msg>
+<msg timestamp="20170828 14:31:55.603" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.603" starttime="20170828 14:31:55.599"></status>
+</kw>
+<kw name="Parse Text" library="finder">
+<arguments>
+<arg>${resp.text}</arg>
+</arguments>
+<assign>
+<var>${resp text}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.603" level="INFO">${resp text} = {
+  "count": 5, 
+  "items": [
+    {
+      "cost": 1.2, 
+      "id": 1, 
+      "name": "Service #1"
+    }, 
+    {
+      "cost": 0.35, 
+      "id": 2, 
+      "name": "Service #2"
+    }, 
+    {
+      "co...</msg>
+<status status="PASS" endtime="20170828 14:31:55.603" starttime="20170828 14:31:55.603"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>${200}</arg>
+<arg>Запрос прошел неуспешно, статус-код = ${resp.status_code}. \nПодробнее:\n${resp text}</arg>
+<arg>${false}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.604" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.604" starttime="20170828 14:31:55.603"></status>
+</kw>
+<kw name="Parse Json" library="HttpLibrary.HTTP">
+<doc>Parses the JSON document `json_string` and returns a data structure.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<assign>
+<var>${client_services}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.605" level="INFO">${client_services} = {u'count': 5, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}, {u'cost': 0.15, u'id': ...</msg>
+<status status="PASS" endtime="20170828 14:31:55.605" starttime="20170828 14:31:55.604"></status>
+</kw>
+<kw name="Return From Keyword" library="BuiltIn">
+<doc>Returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>${client_services}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.607" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20170828 14:31:55.607" starttime="20170828 14:31:55.606"></status>
+</kw>
+<status status="PASS" endtime="20170828 14:31:55.607" starttime="20170828 14:31:55.598"></status>
+</kw>
+<kw name="get_client_services" library="keywords">
+<arguments>
+<arg>7</arg>
+</arguments>
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Получение услуг клиента</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.607" starttime="20170828 14:31:55.607"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{header}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.608" level="INFO">&amp;{header} = { Content-Type=application/json }</msg>
+<status status="PASS" endtime="20170828 14:31:55.608" starttime="20170828 14:31:55.608"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>client_id=${id}</arg>
+</arguments>
+<assign>
+<var>&amp;{data}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.608" level="INFO">&amp;{data} = { client_id=7 }</msg>
+<status status="PASS" endtime="20170828 14:31:55.608" starttime="20170828 14:31:55.608"></status>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>session</arg>
+<arg>${session}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.609" level="INFO">Creating Session using : alias=session, url=http://localhost:5000, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20170828 14:31:55.609" starttime="20170828 14:31:55.608"></status>
+</kw>
+<kw name="Post Request" library="RequestsLibrary">
+<doc>Send a POST request on the session object found using the</doc>
+<arguments>
+<arg>session</arg>
+<arg>/client/services</arg>
+<arg>data=${data}</arg>
+<arg>headers=${header}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.612" level="INFO">Post Request using : alias=session, uri=/client/services, data={"client_id": 7}, headers={u'Content-Type': u'application/json'}, files=None, allow_redirects=True </msg>
+<msg timestamp="20170828 14:31:55.612" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.612" starttime="20170828 14:31:55.609"></status>
+</kw>
+<kw name="Parse Text" library="finder">
+<arguments>
+<arg>${resp.text}</arg>
+</arguments>
+<assign>
+<var>${resp text}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.613" level="INFO">${resp text} = {
+  "count": 5, 
+  "items": [
+    {
+      "cost": 1.2, 
+      "id": 1, 
+      "name": "Service #1"
+    }, 
+    {
+      "cost": 0.35, 
+      "id": 2, 
+      "name": "Service #2"
+    }, 
+    {
+      "co...</msg>
+<status status="PASS" endtime="20170828 14:31:55.613" starttime="20170828 14:31:55.613"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>${200}</arg>
+<arg>Запрос прошел неуспешно, статус-код = ${resp.status_code}. \nПодробнее:\n${resp text}</arg>
+<arg>${false}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.613" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.614" starttime="20170828 14:31:55.613"></status>
+</kw>
+<kw name="Parse Json" library="HttpLibrary.HTTP">
+<doc>Parses the JSON document `json_string` and returns a data structure.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<assign>
+<var>${client_services}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.614" level="INFO">${client_services} = {u'count': 5, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}, {u'cost': 0.15, u'id': ...</msg>
+<status status="PASS" endtime="20170828 14:31:55.614" starttime="20170828 14:31:55.614"></status>
+</kw>
+<kw name="Return From Keyword" library="BuiltIn">
+<doc>Returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>${client_services}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.614" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20170828 14:31:55.614" starttime="20170828 14:31:55.614"></status>
+</kw>
+<status status="PASS" endtime="20170828 14:31:55.614" starttime="20170828 14:31:55.607"></status>
+</kw>
+<kw name="get_client_services" library="keywords">
+<arguments>
+<arg>8</arg>
+</arguments>
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Получение услуг клиента</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.615" starttime="20170828 14:31:55.615"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{header}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.615" level="INFO">&amp;{header} = { Content-Type=application/json }</msg>
+<status status="PASS" endtime="20170828 14:31:55.615" starttime="20170828 14:31:55.615"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>client_id=${id}</arg>
+</arguments>
+<assign>
+<var>&amp;{data}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.616" level="INFO">&amp;{data} = { client_id=8 }</msg>
+<status status="PASS" endtime="20170828 14:31:55.616" starttime="20170828 14:31:55.615"></status>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>session</arg>
+<arg>${session}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.616" level="INFO">Creating Session using : alias=session, url=http://localhost:5000, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20170828 14:31:55.616" starttime="20170828 14:31:55.616"></status>
+</kw>
+<kw name="Post Request" library="RequestsLibrary">
+<doc>Send a POST request on the session object found using the</doc>
+<arguments>
+<arg>session</arg>
+<arg>/client/services</arg>
+<arg>data=${data}</arg>
+<arg>headers=${header}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.619" level="INFO">Post Request using : alias=session, uri=/client/services, data={"client_id": 8}, headers={u'Content-Type': u'application/json'}, files=None, allow_redirects=True </msg>
+<msg timestamp="20170828 14:31:55.619" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.620" starttime="20170828 14:31:55.616"></status>
+</kw>
+<kw name="Parse Text" library="finder">
+<arguments>
+<arg>${resp.text}</arg>
+</arguments>
+<assign>
+<var>${resp text}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.620" level="INFO">${resp text} = {
+  "count": 5, 
+  "items": [
+    {
+      "cost": 1.2, 
+      "id": 1, 
+      "name": "Service #1"
+    }, 
+    {
+      "cost": 0.35, 
+      "id": 2, 
+      "name": "Service #2"
+    }, 
+    {
+      "co...</msg>
+<status status="PASS" endtime="20170828 14:31:55.620" starttime="20170828 14:31:55.620"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>${200}</arg>
+<arg>Запрос прошел неуспешно, статус-код = ${resp.status_code}. \nПодробнее:\n${resp text}</arg>
+<arg>${false}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.621" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.622" starttime="20170828 14:31:55.620"></status>
+</kw>
+<kw name="Parse Json" library="HttpLibrary.HTTP">
+<doc>Parses the JSON document `json_string` and returns a data structure.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<assign>
+<var>${client_services}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.623" level="INFO">${client_services} = {u'count': 5, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}, {u'cost': 0.15, u'id': ...</msg>
+<status status="PASS" endtime="20170828 14:31:55.623" starttime="20170828 14:31:55.622"></status>
+</kw>
+<kw name="Return From Keyword" library="BuiltIn">
+<doc>Returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>${client_services}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.623" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20170828 14:31:55.623" starttime="20170828 14:31:55.623"></status>
+</kw>
+<status status="PASS" endtime="20170828 14:31:55.624" starttime="20170828 14:31:55.614"></status>
+</kw>
+<kw name="get_client_services" library="keywords">
+<arguments>
+<arg>9</arg>
+</arguments>
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Получение услуг клиента</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.624" starttime="20170828 14:31:55.624"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{header}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.624" level="INFO">&amp;{header} = { Content-Type=application/json }</msg>
+<status status="PASS" endtime="20170828 14:31:55.624" starttime="20170828 14:31:55.624"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>client_id=${id}</arg>
+</arguments>
+<assign>
+<var>&amp;{data}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.625" level="INFO">&amp;{data} = { client_id=9 }</msg>
+<status status="PASS" endtime="20170828 14:31:55.625" starttime="20170828 14:31:55.624"></status>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>session</arg>
+<arg>${session}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.625" level="INFO">Creating Session using : alias=session, url=http://localhost:5000, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20170828 14:31:55.625" starttime="20170828 14:31:55.625"></status>
+</kw>
+<kw name="Post Request" library="RequestsLibrary">
+<doc>Send a POST request on the session object found using the</doc>
+<arguments>
+<arg>session</arg>
+<arg>/client/services</arg>
+<arg>data=${data}</arg>
+<arg>headers=${header}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.628" level="INFO">Post Request using : alias=session, uri=/client/services, data={"client_id": 9}, headers={u'Content-Type': u'application/json'}, files=None, allow_redirects=True </msg>
+<msg timestamp="20170828 14:31:55.628" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.629" starttime="20170828 14:31:55.626"></status>
+</kw>
+<kw name="Parse Text" library="finder">
+<arguments>
+<arg>${resp.text}</arg>
+</arguments>
+<assign>
+<var>${resp text}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.629" level="INFO">${resp text} = {
+  "count": 5, 
+  "items": [
+    {
+      "cost": 1.2, 
+      "id": 1, 
+      "name": "Service #1"
+    }, 
+    {
+      "cost": 0.35, 
+      "id": 2, 
+      "name": "Service #2"
+    }, 
+    {
+      "co...</msg>
+<status status="PASS" endtime="20170828 14:31:55.629" starttime="20170828 14:31:55.629"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>${200}</arg>
+<arg>Запрос прошел неуспешно, статус-код = ${resp.status_code}. \nПодробнее:\n${resp text}</arg>
+<arg>${false}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.629" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.630" starttime="20170828 14:31:55.629"></status>
+</kw>
+<kw name="Parse Json" library="HttpLibrary.HTTP">
+<doc>Parses the JSON document `json_string` and returns a data structure.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<assign>
+<var>${client_services}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.630" level="INFO">${client_services} = {u'count': 5, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}, {u'cost': 0.15, u'id': ...</msg>
+<status status="PASS" endtime="20170828 14:31:55.630" starttime="20170828 14:31:55.630"></status>
+</kw>
+<kw name="Return From Keyword" library="BuiltIn">
+<doc>Returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>${client_services}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.630" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20170828 14:31:55.630" starttime="20170828 14:31:55.630"></status>
+</kw>
+<status status="PASS" endtime="20170828 14:31:55.631" starttime="20170828 14:31:55.624"></status>
+</kw>
+<kw name="get_client_services" library="keywords">
+<arguments>
+<arg>10</arg>
+</arguments>
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Получение услуг клиента</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.631" starttime="20170828 14:31:55.631"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{header}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.631" level="INFO">&amp;{header} = { Content-Type=application/json }</msg>
+<status status="PASS" endtime="20170828 14:31:55.631" starttime="20170828 14:31:55.631"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>client_id=${id}</arg>
+</arguments>
+<assign>
+<var>&amp;{data}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.632" level="INFO">&amp;{data} = { client_id=10 }</msg>
+<status status="PASS" endtime="20170828 14:31:55.632" starttime="20170828 14:31:55.631"></status>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>session</arg>
+<arg>${session}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.632" level="INFO">Creating Session using : alias=session, url=http://localhost:5000, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20170828 14:31:55.632" starttime="20170828 14:31:55.632"></status>
+</kw>
+<kw name="Post Request" library="RequestsLibrary">
+<doc>Send a POST request on the session object found using the</doc>
+<arguments>
+<arg>session</arg>
+<arg>/client/services</arg>
+<arg>data=${data}</arg>
+<arg>headers=${header}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.636" level="INFO">Post Request using : alias=session, uri=/client/services, data={"client_id": 10}, headers={u'Content-Type': u'application/json'}, files=None, allow_redirects=True </msg>
+<msg timestamp="20170828 14:31:55.636" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.636" starttime="20170828 14:31:55.632"></status>
+</kw>
+<kw name="Parse Text" library="finder">
+<arguments>
+<arg>${resp.text}</arg>
+</arguments>
+<assign>
+<var>${resp text}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.636" level="INFO">${resp text} = {
+  "count": 5, 
+  "items": [
+    {
+      "cost": 1.2, 
+      "id": 1, 
+      "name": "Service #1"
+    }, 
+    {
+      "cost": 0.35, 
+      "id": 2, 
+      "name": "Service #2"
+    }, 
+    {
+      "co...</msg>
+<status status="PASS" endtime="20170828 14:31:55.636" starttime="20170828 14:31:55.636"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>${200}</arg>
+<arg>Запрос прошел неуспешно, статус-код = ${resp.status_code}. \nПодробнее:\n${resp text}</arg>
+<arg>${false}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.637" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.638" starttime="20170828 14:31:55.637"></status>
+</kw>
+<kw name="Parse Json" library="HttpLibrary.HTTP">
+<doc>Parses the JSON document `json_string` and returns a data structure.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<assign>
+<var>${client_services}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.640" level="INFO">${client_services} = {u'count': 5, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}, {u'cost': 0.15, u'id': ...</msg>
+<status status="PASS" endtime="20170828 14:31:55.640" starttime="20170828 14:31:55.639"></status>
+</kw>
+<kw name="Return From Keyword" library="BuiltIn">
+<doc>Returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>${client_services}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.640" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20170828 14:31:55.640" starttime="20170828 14:31:55.640"></status>
+</kw>
+<status status="PASS" endtime="20170828 14:31:55.640" starttime="20170828 14:31:55.631"></status>
+</kw>
+<kw name="get_client_services" library="keywords">
+<arguments>
+<arg>11</arg>
+</arguments>
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Получение услуг клиента</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.641" starttime="20170828 14:31:55.640"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{header}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.641" level="INFO">&amp;{header} = { Content-Type=application/json }</msg>
+<status status="PASS" endtime="20170828 14:31:55.641" starttime="20170828 14:31:55.641"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>client_id=${id}</arg>
+</arguments>
+<assign>
+<var>&amp;{data}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.641" level="INFO">&amp;{data} = { client_id=11 }</msg>
+<status status="PASS" endtime="20170828 14:31:55.641" starttime="20170828 14:31:55.641"></status>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>session</arg>
+<arg>${session}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.642" level="INFO">Creating Session using : alias=session, url=http://localhost:5000, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20170828 14:31:55.642" starttime="20170828 14:31:55.642"></status>
+</kw>
+<kw name="Post Request" library="RequestsLibrary">
+<doc>Send a POST request on the session object found using the</doc>
+<arguments>
+<arg>session</arg>
+<arg>/client/services</arg>
+<arg>data=${data}</arg>
+<arg>headers=${header}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.645" level="INFO">Post Request using : alias=session, uri=/client/services, data={"client_id": 11}, headers={u'Content-Type': u'application/json'}, files=None, allow_redirects=True </msg>
+<msg timestamp="20170828 14:31:55.645" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.645" starttime="20170828 14:31:55.642"></status>
+</kw>
+<kw name="Parse Text" library="finder">
+<arguments>
+<arg>${resp.text}</arg>
+</arguments>
+<assign>
+<var>${resp text}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.646" level="INFO">${resp text} = {
+  "count": 5, 
+  "items": [
+    {
+      "cost": 1.2, 
+      "id": 1, 
+      "name": "Service #1"
+    }, 
+    {
+      "cost": 0.35, 
+      "id": 2, 
+      "name": "Service #2"
+    }, 
+    {
+      "co...</msg>
+<status status="PASS" endtime="20170828 14:31:55.646" starttime="20170828 14:31:55.646"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>${200}</arg>
+<arg>Запрос прошел неуспешно, статус-код = ${resp.status_code}. \nПодробнее:\n${resp text}</arg>
+<arg>${false}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.646" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.647" starttime="20170828 14:31:55.646"></status>
+</kw>
+<kw name="Parse Json" library="HttpLibrary.HTTP">
+<doc>Parses the JSON document `json_string` and returns a data structure.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<assign>
+<var>${client_services}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.647" level="INFO">${client_services} = {u'count': 5, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}, {u'cost': 0.15, u'id': ...</msg>
+<status status="PASS" endtime="20170828 14:31:55.647" starttime="20170828 14:31:55.647"></status>
+</kw>
+<kw name="Return From Keyword" library="BuiltIn">
+<doc>Returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>${client_services}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.647" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20170828 14:31:55.647" starttime="20170828 14:31:55.647"></status>
+</kw>
+<status status="PASS" endtime="20170828 14:31:55.647" starttime="20170828 14:31:55.640"></status>
+</kw>
+<kw name="get_client_services" library="keywords">
+<arguments>
+<arg>12</arg>
+</arguments>
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Получение услуг клиента</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.648" starttime="20170828 14:31:55.648"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{header}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.648" level="INFO">&amp;{header} = { Content-Type=application/json }</msg>
+<status status="PASS" endtime="20170828 14:31:55.648" starttime="20170828 14:31:55.648"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>client_id=${id}</arg>
+</arguments>
+<assign>
+<var>&amp;{data}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.649" level="INFO">&amp;{data} = { client_id=12 }</msg>
+<status status="PASS" endtime="20170828 14:31:55.649" starttime="20170828 14:31:55.648"></status>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>session</arg>
+<arg>${session}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.649" level="INFO">Creating Session using : alias=session, url=http://localhost:5000, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20170828 14:31:55.649" starttime="20170828 14:31:55.649"></status>
+</kw>
+<kw name="Post Request" library="RequestsLibrary">
+<doc>Send a POST request on the session object found using the</doc>
+<arguments>
+<arg>session</arg>
+<arg>/client/services</arg>
+<arg>data=${data}</arg>
+<arg>headers=${header}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.652" level="INFO">Post Request using : alias=session, uri=/client/services, data={"client_id": 12}, headers={u'Content-Type': u'application/json'}, files=None, allow_redirects=True </msg>
+<msg timestamp="20170828 14:31:55.652" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.652" starttime="20170828 14:31:55.649"></status>
+</kw>
+<kw name="Parse Text" library="finder">
+<arguments>
+<arg>${resp.text}</arg>
+</arguments>
+<assign>
+<var>${resp text}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.653" level="INFO">${resp text} = {
+  "count": 5, 
+  "items": [
+    {
+      "cost": 1.2, 
+      "id": 1, 
+      "name": "Service #1"
+    }, 
+    {
+      "cost": 0.35, 
+      "id": 2, 
+      "name": "Service #2"
+    }, 
+    {
+      "co...</msg>
+<status status="PASS" endtime="20170828 14:31:55.653" starttime="20170828 14:31:55.652"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>${200}</arg>
+<arg>Запрос прошел неуспешно, статус-код = ${resp.status_code}. \nПодробнее:\n${resp text}</arg>
+<arg>${false}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.653" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.653" starttime="20170828 14:31:55.653"></status>
+</kw>
+<kw name="Parse Json" library="HttpLibrary.HTTP">
+<doc>Parses the JSON document `json_string` and returns a data structure.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<assign>
+<var>${client_services}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.654" level="INFO">${client_services} = {u'count': 5, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}, {u'cost': 0.15, u'id': ...</msg>
+<status status="PASS" endtime="20170828 14:31:55.654" starttime="20170828 14:31:55.653"></status>
+</kw>
+<kw name="Return From Keyword" library="BuiltIn">
+<doc>Returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>${client_services}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.654" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20170828 14:31:55.654" starttime="20170828 14:31:55.654"></status>
+</kw>
+<status status="PASS" endtime="20170828 14:31:55.654" starttime="20170828 14:31:55.648"></status>
+</kw>
+<kw name="get_client_services" library="keywords">
+<arguments>
+<arg>13</arg>
+</arguments>
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Получение услуг клиента</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.655" starttime="20170828 14:31:55.654"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{header}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.655" level="INFO">&amp;{header} = { Content-Type=application/json }</msg>
+<status status="PASS" endtime="20170828 14:31:55.655" starttime="20170828 14:31:55.655"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>client_id=${id}</arg>
+</arguments>
+<assign>
+<var>&amp;{data}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.656" level="INFO">&amp;{data} = { client_id=13 }</msg>
+<status status="PASS" endtime="20170828 14:31:55.656" starttime="20170828 14:31:55.655"></status>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>session</arg>
+<arg>${session}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.656" level="INFO">Creating Session using : alias=session, url=http://localhost:5000, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20170828 14:31:55.656" starttime="20170828 14:31:55.656"></status>
+</kw>
+<kw name="Post Request" library="RequestsLibrary">
+<doc>Send a POST request on the session object found using the</doc>
+<arguments>
+<arg>session</arg>
+<arg>/client/services</arg>
+<arg>data=${data}</arg>
+<arg>headers=${header}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.659" level="INFO">Post Request using : alias=session, uri=/client/services, data={"client_id": 13}, headers={u'Content-Type': u'application/json'}, files=None, allow_redirects=True </msg>
+<msg timestamp="20170828 14:31:55.659" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.659" starttime="20170828 14:31:55.656"></status>
+</kw>
+<kw name="Parse Text" library="finder">
+<arguments>
+<arg>${resp.text}</arg>
+</arguments>
+<assign>
+<var>${resp text}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.659" level="INFO">${resp text} = {
+  "count": 5, 
+  "items": [
+    {
+      "cost": 1.2, 
+      "id": 1, 
+      "name": "Service #1"
+    }, 
+    {
+      "cost": 0.35, 
+      "id": 2, 
+      "name": "Service #2"
+    }, 
+    {
+      "co...</msg>
+<status status="PASS" endtime="20170828 14:31:55.660" starttime="20170828 14:31:55.659"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>${200}</arg>
+<arg>Запрос прошел неуспешно, статус-код = ${resp.status_code}. \nПодробнее:\n${resp text}</arg>
+<arg>${false}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.660" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.660" starttime="20170828 14:31:55.660"></status>
+</kw>
+<kw name="Parse Json" library="HttpLibrary.HTTP">
+<doc>Parses the JSON document `json_string` and returns a data structure.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<assign>
+<var>${client_services}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.661" level="INFO">${client_services} = {u'count': 5, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}, {u'cost': 0.15, u'id': ...</msg>
+<status status="PASS" endtime="20170828 14:31:55.661" starttime="20170828 14:31:55.660"></status>
+</kw>
+<kw name="Return From Keyword" library="BuiltIn">
+<doc>Returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>${client_services}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.661" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20170828 14:31:55.661" starttime="20170828 14:31:55.661"></status>
+</kw>
+<status status="PASS" endtime="20170828 14:31:55.661" starttime="20170828 14:31:55.654"></status>
+</kw>
+<kw name="get_client_services" library="keywords">
+<arguments>
+<arg>14</arg>
+</arguments>
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Получение услуг клиента</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.661" starttime="20170828 14:31:55.661"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{header}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.662" level="INFO">&amp;{header} = { Content-Type=application/json }</msg>
+<status status="PASS" endtime="20170828 14:31:55.662" starttime="20170828 14:31:55.662"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>client_id=${id}</arg>
+</arguments>
+<assign>
+<var>&amp;{data}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.662" level="INFO">&amp;{data} = { client_id=14 }</msg>
+<status status="PASS" endtime="20170828 14:31:55.662" starttime="20170828 14:31:55.662"></status>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>session</arg>
+<arg>${session}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.662" level="INFO">Creating Session using : alias=session, url=http://localhost:5000, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20170828 14:31:55.663" starttime="20170828 14:31:55.662"></status>
+</kw>
+<kw name="Post Request" library="RequestsLibrary">
+<doc>Send a POST request on the session object found using the</doc>
+<arguments>
+<arg>session</arg>
+<arg>/client/services</arg>
+<arg>data=${data}</arg>
+<arg>headers=${header}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.666" level="INFO">Post Request using : alias=session, uri=/client/services, data={"client_id": 14}, headers={u'Content-Type': u'application/json'}, files=None, allow_redirects=True </msg>
+<msg timestamp="20170828 14:31:55.666" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.666" starttime="20170828 14:31:55.663"></status>
+</kw>
+<kw name="Parse Text" library="finder">
+<arguments>
+<arg>${resp.text}</arg>
+</arguments>
+<assign>
+<var>${resp text}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.666" level="INFO">${resp text} = {
+  "count": 5, 
+  "items": [
+    {
+      "cost": 1.2, 
+      "id": 1, 
+      "name": "Service #1"
+    }, 
+    {
+      "cost": 0.35, 
+      "id": 2, 
+      "name": "Service #2"
+    }, 
+    {
+      "co...</msg>
+<status status="PASS" endtime="20170828 14:31:55.666" starttime="20170828 14:31:55.666"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>${200}</arg>
+<arg>Запрос прошел неуспешно, статус-код = ${resp.status_code}. \nПодробнее:\n${resp text}</arg>
+<arg>${false}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.667" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.667" starttime="20170828 14:31:55.667"></status>
+</kw>
+<kw name="Parse Json" library="HttpLibrary.HTTP">
+<doc>Parses the JSON document `json_string` and returns a data structure.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<assign>
+<var>${client_services}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.668" level="INFO">${client_services} = {u'count': 5, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}, {u'cost': 0.15, u'id': ...</msg>
+<status status="PASS" endtime="20170828 14:31:55.668" starttime="20170828 14:31:55.667"></status>
+</kw>
+<kw name="Return From Keyword" library="BuiltIn">
+<doc>Returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>${client_services}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.668" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20170828 14:31:55.668" starttime="20170828 14:31:55.668"></status>
+</kw>
+<status status="PASS" endtime="20170828 14:31:55.669" starttime="20170828 14:31:55.661"></status>
+</kw>
+<kw name="get_client_services" library="keywords">
+<arguments>
+<arg>15</arg>
+</arguments>
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Получение услуг клиента</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.669" starttime="20170828 14:31:55.669"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{header}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.670" level="INFO">&amp;{header} = { Content-Type=application/json }</msg>
+<status status="PASS" endtime="20170828 14:31:55.670" starttime="20170828 14:31:55.669"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>client_id=${id}</arg>
+</arguments>
+<assign>
+<var>&amp;{data}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.671" level="INFO">&amp;{data} = { client_id=15 }</msg>
+<status status="PASS" endtime="20170828 14:31:55.671" starttime="20170828 14:31:55.670"></status>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>session</arg>
+<arg>${session}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.671" level="INFO">Creating Session using : alias=session, url=http://localhost:5000, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20170828 14:31:55.671" starttime="20170828 14:31:55.671"></status>
+</kw>
+<kw name="Post Request" library="RequestsLibrary">
+<doc>Send a POST request on the session object found using the</doc>
+<arguments>
+<arg>session</arg>
+<arg>/client/services</arg>
+<arg>data=${data}</arg>
+<arg>headers=${header}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.674" level="INFO">Post Request using : alias=session, uri=/client/services, data={"client_id": 15}, headers={u'Content-Type': u'application/json'}, files=None, allow_redirects=True </msg>
+<msg timestamp="20170828 14:31:55.674" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.674" starttime="20170828 14:31:55.671"></status>
+</kw>
+<kw name="Parse Text" library="finder">
+<arguments>
+<arg>${resp.text}</arg>
+</arguments>
+<assign>
+<var>${resp text}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.675" level="INFO">${resp text} = {
+  "count": 5, 
+  "items": [
+    {
+      "cost": 1.2, 
+      "id": 1, 
+      "name": "Service #1"
+    }, 
+    {
+      "cost": 0.35, 
+      "id": 2, 
+      "name": "Service #2"
+    }, 
+    {
+      "co...</msg>
+<status status="PASS" endtime="20170828 14:31:55.675" starttime="20170828 14:31:55.674"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>${200}</arg>
+<arg>Запрос прошел неуспешно, статус-код = ${resp.status_code}. \nПодробнее:\n${resp text}</arg>
+<arg>${false}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.675" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.675" starttime="20170828 14:31:55.675"></status>
+</kw>
+<kw name="Parse Json" library="HttpLibrary.HTTP">
+<doc>Parses the JSON document `json_string` and returns a data structure.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<assign>
+<var>${client_services}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.676" level="INFO">${client_services} = {u'count': 5, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}, {u'cost': 0.15, u'id': ...</msg>
+<status status="PASS" endtime="20170828 14:31:55.676" starttime="20170828 14:31:55.676"></status>
+</kw>
+<kw name="Return From Keyword" library="BuiltIn">
+<doc>Returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>${client_services}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.676" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20170828 14:31:55.676" starttime="20170828 14:31:55.676"></status>
+</kw>
+<status status="PASS" endtime="20170828 14:31:55.676" starttime="20170828 14:31:55.669"></status>
+</kw>
+<kw name="get_client_services" library="keywords">
+<arguments>
+<arg>16</arg>
+</arguments>
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Получение услуг клиента</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.677" starttime="20170828 14:31:55.677"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{header}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.677" level="INFO">&amp;{header} = { Content-Type=application/json }</msg>
+<status status="PASS" endtime="20170828 14:31:55.677" starttime="20170828 14:31:55.677"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>client_id=${id}</arg>
+</arguments>
+<assign>
+<var>&amp;{data}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.677" level="INFO">&amp;{data} = { client_id=16 }</msg>
+<status status="PASS" endtime="20170828 14:31:55.677" starttime="20170828 14:31:55.677"></status>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>session</arg>
+<arg>${session}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.678" level="INFO">Creating Session using : alias=session, url=http://localhost:5000, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20170828 14:31:55.678" starttime="20170828 14:31:55.678"></status>
+</kw>
+<kw name="Post Request" library="RequestsLibrary">
+<doc>Send a POST request on the session object found using the</doc>
+<arguments>
+<arg>session</arg>
+<arg>/client/services</arg>
+<arg>data=${data}</arg>
+<arg>headers=${header}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.681" level="INFO">Post Request using : alias=session, uri=/client/services, data={"client_id": 16}, headers={u'Content-Type': u'application/json'}, files=None, allow_redirects=True </msg>
+<msg timestamp="20170828 14:31:55.681" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.681" starttime="20170828 14:31:55.678"></status>
+</kw>
+<kw name="Parse Text" library="finder">
+<arguments>
+<arg>${resp.text}</arg>
+</arguments>
+<assign>
+<var>${resp text}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.682" level="INFO">${resp text} = {
+  "count": 3, 
+  "items": [
+    {
+      "cost": 1.2, 
+      "id": 1, 
+      "name": "Service #1"
+    }, 
+    {
+      "cost": 0.35, 
+      "id": 2, 
+      "name": "Service #2"
+    }, 
+    {
+      "co...</msg>
+<status status="PASS" endtime="20170828 14:31:55.682" starttime="20170828 14:31:55.681"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>${200}</arg>
+<arg>Запрос прошел неуспешно, статус-код = ${resp.status_code}. \nПодробнее:\n${resp text}</arg>
+<arg>${false}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.682" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.682" starttime="20170828 14:31:55.682"></status>
+</kw>
+<kw name="Parse Json" library="HttpLibrary.HTTP">
+<doc>Parses the JSON document `json_string` and returns a data structure.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<assign>
+<var>${client_services}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.683" level="INFO">${client_services} = {u'count': 3, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}]}</msg>
+<status status="PASS" endtime="20170828 14:31:55.683" starttime="20170828 14:31:55.682"></status>
+</kw>
+<kw name="Return From Keyword" library="BuiltIn">
+<doc>Returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>${client_services}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.683" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20170828 14:31:55.683" starttime="20170828 14:31:55.683"></status>
+</kw>
+<status status="PASS" endtime="20170828 14:31:55.683" starttime="20170828 14:31:55.676"></status>
+</kw>
+<kw name="Query" library="DatabaseLibrary">
+<doc>Uses the input `selectStatement` to query for the values that will be returned as a list of tuples. Set optional</doc>
+<arguments>
+<arg>select * from balances where clients_client_id = 16</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.683" level="INFO">Executing : Query  |  select * from balances where clients_client_id = 16 </msg>
+<status status="PASS" endtime="20170828 14:31:55.684" starttime="20170828 14:31:55.683"></status>
+</kw>
+<msg timestamp="20170828 14:31:55.684" level="INFO">${client} = [(16, 3.3)]</msg>
+<status status="PASS" endtime="20170828 14:31:55.684" starttime="20170828 14:31:55.564"></status>
+</kw>
+<kw name="Should Be True" library="BuiltIn">
+<doc>Fails if the given condition is not true.</doc>
+<arguments>
+<arg>${client}</arg>
+<arg>Не удалось найти подходящего клиента</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.684" starttime="20170828 14:31:55.684"></status>
+</kw>
+<kw name="Set Global Variable" library="BuiltIn">
+<doc>Makes a variable available globally in all tests and suites.</doc>
+<arguments>
+<arg>${client_id}</arg>
+<arg>${client[0][0]}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.684" level="INFO">${client_id} = 16</msg>
+<status status="PASS" endtime="20170828 14:31:55.684" starttime="20170828 14:31:55.684"></status>
+</kw>
+<kw name="Set Global Variable" library="BuiltIn">
+<doc>Makes a variable available globally in all tests and suites.</doc>
+<arguments>
+<arg>${client_balance}</arg>
+<arg>${client[0][1]}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.685" level="INFO">${client_balance} = 3.3</msg>
+<status status="PASS" endtime="20170828 14:31:55.685" starttime="20170828 14:31:55.685"></status>
+</kw>
+<doc>Получение ID и баланса подходящего клиента
+У клиента должен быть хотя бы одна неподключенная услуга, а баланс клиента должен быть больше нуля
+Будет создан новый клиент, если не будет найден подходящий под условия кандидат</doc>
+<tags>
+<tag>database</tag>
+<tag>get</tag>
+</tags>
+<status status="PASS" endtime="20170828 14:31:55.685" critical="yes" starttime="20170828 14:31:55.564"></status>
+</test>
+<test id="s1-t3" name="Get Client Services">
+<kw name="get_client_services" library="keywords">
+<arguments>
+<arg>${client_id}</arg>
+</arguments>
+<assign>
+<var>${client_services}</var>
+</assign>
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Получение услуг клиента</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.686" starttime="20170828 14:31:55.686"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{header}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.686" level="INFO">&amp;{header} = { Content-Type=application/json }</msg>
+<status status="PASS" endtime="20170828 14:31:55.686" starttime="20170828 14:31:55.686"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>client_id=${id}</arg>
+</arguments>
+<assign>
+<var>&amp;{data}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.687" level="INFO">&amp;{data} = { client_id=16 }</msg>
+<status status="PASS" endtime="20170828 14:31:55.687" starttime="20170828 14:31:55.686"></status>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>session</arg>
+<arg>${session}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.687" level="INFO">Creating Session using : alias=session, url=http://localhost:5000, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20170828 14:31:55.687" starttime="20170828 14:31:55.687"></status>
+</kw>
+<kw name="Post Request" library="RequestsLibrary">
+<doc>Send a POST request on the session object found using the</doc>
+<arguments>
+<arg>session</arg>
+<arg>/client/services</arg>
+<arg>data=${data}</arg>
+<arg>headers=${header}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.691" level="INFO">Post Request using : alias=session, uri=/client/services, data={"client_id": 16}, headers={u'Content-Type': u'application/json'}, files=None, allow_redirects=True </msg>
+<msg timestamp="20170828 14:31:55.692" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.692" starttime="20170828 14:31:55.688"></status>
+</kw>
+<kw name="Parse Text" library="finder">
+<arguments>
+<arg>${resp.text}</arg>
+</arguments>
+<assign>
+<var>${resp text}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.692" level="INFO">${resp text} = {
+  "count": 3, 
+  "items": [
+    {
+      "cost": 1.2, 
+      "id": 1, 
+      "name": "Service #1"
+    }, 
+    {
+      "cost": 0.35, 
+      "id": 2, 
+      "name": "Service #2"
+    }, 
+    {
+      "co...</msg>
+<status status="PASS" endtime="20170828 14:31:55.692" starttime="20170828 14:31:55.692"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>${200}</arg>
+<arg>Запрос прошел неуспешно, статус-код = ${resp.status_code}. \nПодробнее:\n${resp text}</arg>
+<arg>${false}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.693" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.693" starttime="20170828 14:31:55.692"></status>
+</kw>
+<kw name="Parse Json" library="HttpLibrary.HTTP">
+<doc>Parses the JSON document `json_string` and returns a data structure.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<assign>
+<var>${client_services}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.693" level="INFO">${client_services} = {u'count': 3, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}]}</msg>
+<status status="PASS" endtime="20170828 14:31:55.693" starttime="20170828 14:31:55.693"></status>
+</kw>
+<kw name="Return From Keyword" library="BuiltIn">
+<doc>Returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>${client_services}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.694" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20170828 14:31:55.694" starttime="20170828 14:31:55.694"></status>
+</kw>
+<msg timestamp="20170828 14:31:55.694" level="INFO">${client_services} = {u'count': 3, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}]}</msg>
+<status status="PASS" endtime="20170828 14:31:55.694" starttime="20170828 14:31:55.686"></status>
+</kw>
+<kw name="Set Global Variable" library="BuiltIn">
+<doc>Makes a variable available globally in all tests and suites.</doc>
+<arguments>
+<arg>${client_services}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.694" level="INFO">${client_services} = {u'count': 3, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}]}</msg>
+<status status="PASS" endtime="20170828 14:31:55.694" starttime="20170828 14:31:55.694"></status>
+</kw>
+<doc>Получение подключенных клиенту услуг</doc>
+<tags>
+<tag>get</tag>
+<tag>services</tag>
+</tags>
+<status status="PASS" endtime="20170828 14:31:55.694" critical="yes" starttime="20170828 14:31:55.685"></status>
+</test>
+<test id="s1-t4" name="Get All Services">
+<kw name="get_all_services" library="keywords">
+<assign>
+<var>${all_services}</var>
+</assign>
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Получение всех услуг</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.696" starttime="20170828 14:31:55.695"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{header}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.696" level="INFO">&amp;{header} = { Content-Type=application/json }</msg>
+<status status="PASS" endtime="20170828 14:31:55.696" starttime="20170828 14:31:55.696"></status>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>session</arg>
+<arg>${session}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.696" level="INFO">Creating Session using : alias=session, url=http://localhost:5000, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20170828 14:31:55.697" starttime="20170828 14:31:55.696"></status>
+</kw>
+<kw name="Get Request" library="RequestsLibrary">
+<doc>Send a GET request on the session object found using the</doc>
+<arguments>
+<arg>session</arg>
+<arg>/services</arg>
+<arg>headers=${header}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.700" level="INFO">Get Request using : alias=session, uri=/services, headers={u'Content-Type': u'application/json'} json=None</msg>
+<msg timestamp="20170828 14:31:55.700" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.700" starttime="20170828 14:31:55.697"></status>
+</kw>
+<kw name="Parse Text" library="finder">
+<arguments>
+<arg>${resp.text}</arg>
+</arguments>
+<assign>
+<var>${resp text}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.701" level="INFO">${resp text} = {
+  "count": 5, 
+  "items": [
+    {
+      "cost": 1.2, 
+      "id": 1, 
+      "name": "Service #1"
+    }, 
+    {
+      "cost": 0.35, 
+      "id": 2, 
+      "name": "Service #2"
+    }, 
+    {
+      "co...</msg>
+<status status="PASS" endtime="20170828 14:31:55.701" starttime="20170828 14:31:55.700"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>${200}</arg>
+<arg>Запрос прошел неуспешно, статус-код = ${resp.status_code}. \nПодробнее: ${resp text}</arg>
+<arg>${false}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.701" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.701" starttime="20170828 14:31:55.701"></status>
+</kw>
+<kw name="Parse Json" library="HttpLibrary.HTTP">
+<doc>Parses the JSON document `json_string` and returns a data structure.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<assign>
+<var>${all_services}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.702" level="INFO">${all_services} = {u'count': 5, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}, {u'cost': 0.15, u'id': ...</msg>
+<status status="PASS" endtime="20170828 14:31:55.702" starttime="20170828 14:31:55.702"></status>
+</kw>
+<kw name="Return From Keyword" library="BuiltIn">
+<doc>Returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>${all_services}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.702" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20170828 14:31:55.702" starttime="20170828 14:31:55.702"></status>
+</kw>
+<msg timestamp="20170828 14:31:55.702" level="INFO">${all_services} = {u'count': 5, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}, {u'cost': 0.15, u'id': ...</msg>
+<status status="PASS" endtime="20170828 14:31:55.702" starttime="20170828 14:31:55.695"></status>
+</kw>
+<kw name="Set Global Variable" library="BuiltIn">
+<doc>Makes a variable available globally in all tests and suites.</doc>
+<arguments>
+<arg>${all_services}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.703" level="INFO">${all_services} = {u'count': 5, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}, {u'cost': 0.15, u'id': ...</msg>
+<status status="PASS" endtime="20170828 14:31:55.703" starttime="20170828 14:31:55.703"></status>
+</kw>
+<doc>Получение всех услуг</doc>
+<tags>
+<tag>get</tag>
+<tag>services</tag>
+</tags>
+<status status="PASS" endtime="20170828 14:31:55.703" critical="yes" starttime="20170828 14:31:55.695"></status>
+</test>
+<test id="s1-t5" name="Post Suitable Service">
+<kw name="find_suitable_service" library="keywords">
+<arguments>
+<arg>${all_services}</arg>
+<arg>${client_services}</arg>
+</arguments>
+<assign>
+<var>${needed_service}</var>
+</assign>
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Поиск еще не подключенной клиенту услуги</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.704" starttime="20170828 14:31:55.704"></status>
+</kw>
+<kw name="Find Service" library="finder">
+<arguments>
+<arg>${all_services}</arg>
+<arg>${client_services}</arg>
+</arguments>
+<assign>
+<var>${needed_service}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.704" level="INFO">${needed_service} = {u'cost': 0.15, u'id': 4, u'name': u'Service #4'}</msg>
+<status status="PASS" endtime="20170828 14:31:55.704" starttime="20170828 14:31:55.704"></status>
+</kw>
+<kw name="Should Be True" library="BuiltIn">
+<doc>Fails if the given condition is not true.</doc>
+<arguments>
+<arg>${needed_service}</arg>
+<arg>Не удалось найти подходящую услугу</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.705" starttime="20170828 14:31:55.704"></status>
+</kw>
+<kw name="Return From Keyword" library="BuiltIn">
+<doc>Returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>${needed_service}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.705" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20170828 14:31:55.705" starttime="20170828 14:31:55.705"></status>
+</kw>
+<msg timestamp="20170828 14:31:55.705" level="INFO">${needed_service} = {u'cost': 0.15, u'id': 4, u'name': u'Service #4'}</msg>
+<status status="PASS" endtime="20170828 14:31:55.705" starttime="20170828 14:31:55.704"></status>
+</kw>
+<kw name="Set Global Variable" library="BuiltIn">
+<doc>Makes a variable available globally in all tests and suites.</doc>
+<arguments>
+<arg>${service_id}</arg>
+<arg>${needed_service['id']}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.705" level="INFO">${service_id} = 4</msg>
+<status status="PASS" endtime="20170828 14:31:55.706" starttime="20170828 14:31:55.705"></status>
+</kw>
+<kw name="Set Global Variable" library="BuiltIn">
+<doc>Makes a variable available globally in all tests and suites.</doc>
+<arguments>
+<arg>${service_cost}</arg>
+<arg>${needed_service['cost']}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.706" level="INFO">${service_cost} = 0.15</msg>
+<status status="PASS" endtime="20170828 14:31:55.706" starttime="20170828 14:31:55.706"></status>
+</kw>
+<kw name="Set Global Variable" library="BuiltIn">
+<doc>Makes a variable available globally in all tests and suites.</doc>
+<arguments>
+<arg>${needed_service}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.707" level="INFO">${needed_service} = {u'cost': 0.15, u'id': 4, u'name': u'Service #4'}</msg>
+<status status="PASS" endtime="20170828 14:31:55.707" starttime="20170828 14:31:55.706"></status>
+</kw>
+<kw name="post_service" library="keywords">
+<arguments>
+<arg>${client_id}</arg>
+<arg>${service_id}</arg>
+</arguments>
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Подключение услуги клиенту</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.708" starttime="20170828 14:31:55.708"></status>
+</kw>
+<kw name="Should Not Be Equal" library="BuiltIn">
+<doc>Fails if the given objects are equal.</doc>
+<arguments>
+<arg>${client_id}</arg>
+<arg>${EMPTY}</arg>
+<arg>ID клиента не должен быть пустым</arg>
+<arg>${False}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.708" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'str'&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.709" starttime="20170828 14:31:55.708"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{header}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.709" level="INFO">&amp;{header} = { Content-Type=application/json }</msg>
+<status status="PASS" endtime="20170828 14:31:55.709" starttime="20170828 14:31:55.709"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>client_id=${client_id}</arg>
+<arg>service_id=${service_id}</arg>
+</arguments>
+<assign>
+<var>&amp;{data}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.710" level="INFO">&amp;{data} = { client_id=16 | service_id=4 }</msg>
+<status status="PASS" endtime="20170828 14:31:55.710" starttime="20170828 14:31:55.709"></status>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>session</arg>
+<arg>${session}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.710" level="INFO">Creating Session using : alias=session, url=http://localhost:5000, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20170828 14:31:55.710" starttime="20170828 14:31:55.710"></status>
+</kw>
+<kw name="Post Request" library="RequestsLibrary">
+<doc>Send a POST request on the session object found using the</doc>
+<arguments>
+<arg>session</arg>
+<arg>/client/add_service</arg>
+<arg>data=${data}</arg>
+<arg>headers=${header}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.715" level="INFO">Post Request using : alias=session, uri=/client/add_service, data={"client_id": 16, "service_id": 4}, headers={u'Content-Type': u'application/json'}, files=None, allow_redirects=True </msg>
+<msg timestamp="20170828 14:31:55.715" level="INFO">${resp} = &lt;Response [202]&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.715" starttime="20170828 14:31:55.710"></status>
+</kw>
+<kw name="Parse Text" library="finder">
+<arguments>
+<arg>${resp.text}</arg>
+</arguments>
+<assign>
+<var>${resp text}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.716" level="INFO">${resp text} = Processing</msg>
+<status status="PASS" endtime="20170828 14:31:55.716" starttime="20170828 14:31:55.715"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>${202}</arg>
+<arg>Запрос прошел неуспешно, статус-код = ${resp.status_code}. \nПодробнее: ${resp text}</arg>
+<arg>${false}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.716" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.716" starttime="20170828 14:31:55.716"></status>
+</kw>
+<status status="PASS" endtime="20170828 14:31:55.716" starttime="20170828 14:31:55.707"></status>
+</kw>
+<kw name="waiting_for_check" library="keywords">
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Ожидание подключения услуги клиенту</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.717" starttime="20170828 14:31:55.717"></status>
+</kw>
+<kw name="Run Keyword And Ignore Error" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<arguments>
+<arg>Wait Until Keyword Succeeds</arg>
+<arg>1 min</arg>
+<arg>10 sec</arg>
+<arg>chek_the_addition_of_the_service</arg>
+</arguments>
+<assign>
+<var>${wait}</var>
+</assign>
+<kw name="Wait Until Keyword Succeeds" library="BuiltIn">
+<doc>Runs the specified keyword and retries if it fails.</doc>
+<arguments>
+<arg>1 min</arg>
+<arg>10 sec</arg>
+<arg>chek_the_addition_of_the_service</arg>
+</arguments>
+<kw name="chek_the_addition_of_the_service" library="keywords">
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Проверка добавления нового сервиса</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:31:55.718" starttime="20170828 14:31:55.718"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{header}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.718" level="INFO">&amp;{header} = { Content-Type=application/json }</msg>
+<status status="PASS" endtime="20170828 14:31:55.718" starttime="20170828 14:31:55.718"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>client_id=${client_id}</arg>
+</arguments>
+<assign>
+<var>&amp;{data}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.718" level="INFO">&amp;{data} = { client_id=16 }</msg>
+<status status="PASS" endtime="20170828 14:31:55.719" starttime="20170828 14:31:55.718"></status>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>session</arg>
+<arg>${session}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.719" level="INFO">Creating Session using : alias=session, url=http://localhost:5000, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20170828 14:31:55.719" starttime="20170828 14:31:55.719"></status>
+</kw>
+<kw name="Post Request" library="RequestsLibrary">
+<doc>Send a POST request on the session object found using the</doc>
+<arguments>
+<arg>session</arg>
+<arg>/client/services</arg>
+<arg>data=${data}</arg>
+<arg>headers=${header}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.722" level="INFO">Post Request using : alias=session, uri=/client/services, data={"client_id": 16}, headers={u'Content-Type': u'application/json'}, files=None, allow_redirects=True </msg>
+<msg timestamp="20170828 14:31:55.723" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.723" starttime="20170828 14:31:55.719"></status>
+</kw>
+<kw name="Parse Text" library="finder">
+<arguments>
+<arg>${resp.text}</arg>
+</arguments>
+<assign>
+<var>${resp text}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.723" level="INFO">${resp text} = {
+  "count": 3, 
+  "items": [
+    {
+      "cost": 1.2, 
+      "id": 1, 
+      "name": "Service #1"
+    }, 
+    {
+      "cost": 0.35, 
+      "id": 2, 
+      "name": "Service #2"
+    }, 
+    {
+      "co...</msg>
+<status status="PASS" endtime="20170828 14:31:55.723" starttime="20170828 14:31:55.723"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>${200}</arg>
+<arg>Запрос прошел неуспешно, статус-код = ${resp.status_code}. \nПодробнее: ${resp text}</arg>
+<arg>${false}</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.724" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170828 14:31:55.725" starttime="20170828 14:31:55.723"></status>
+</kw>
+<kw name="Parse Json" library="HttpLibrary.HTTP">
+<doc>Parses the JSON document `json_string` and returns a data structure.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<assign>
+<var>${new_client_services}</var>
+</assign>
+<msg timestamp="20170828 14:31:55.725" level="INFO">${new_client_services} = {u'count': 3, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}]}</msg>
+<status status="PASS" endtime="20170828 14:31:55.725" starttime="20170828 14:31:55.725"></status>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<arguments>
+<arg>${new_client_services['items']}</arg>
+<arg>${needed_service}</arg>
+<arg>Новый сервис не был добавлен</arg>
+</arguments>
+<msg timestamp="20170828 14:31:55.725" level="FAIL">Новый сервис не был добавлен: '[{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}]' does not contain '{u'cost': 0.15, u'id': 4, u'name': u'Service #4'}'</msg>
+<status status="FAIL" endtime="20170828 14:31:55.726" starttime="20170828 14:31:55.725"></status>
+</kw>
+<status status="FAIL" endtime="20170828 14:31:55.726" starttime="20170828 14:31:55.717"></status>
+</kw>
+<kw name="chek_the_addition_of_the_service" library="keywords">
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Проверка добавления нового сервиса</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:32:05.728" starttime="20170828 14:32:05.727"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{header}</var>
+</assign>
+<msg timestamp="20170828 14:32:05.731" level="INFO">&amp;{header} = { Content-Type=application/json }</msg>
+<status status="PASS" endtime="20170828 14:32:05.731" starttime="20170828 14:32:05.728"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>client_id=${client_id}</arg>
+</arguments>
+<assign>
+<var>&amp;{data}</var>
+</assign>
+<msg timestamp="20170828 14:32:05.732" level="INFO">&amp;{data} = { client_id=16 }</msg>
+<status status="PASS" endtime="20170828 14:32:05.732" starttime="20170828 14:32:05.731"></status>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>session</arg>
+<arg>${session}</arg>
+</arguments>
+<msg timestamp="20170828 14:32:05.732" level="INFO">Creating Session using : alias=session, url=http://localhost:5000, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20170828 14:32:05.732" starttime="20170828 14:32:05.732"></status>
+</kw>
+<kw name="Post Request" library="RequestsLibrary">
+<doc>Send a POST request on the session object found using the</doc>
+<arguments>
+<arg>session</arg>
+<arg>/client/services</arg>
+<arg>data=${data}</arg>
+<arg>headers=${header}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20170828 14:32:05.735" level="INFO">Post Request using : alias=session, uri=/client/services, data={"client_id": 16}, headers={u'Content-Type': u'application/json'}, files=None, allow_redirects=True </msg>
+<msg timestamp="20170828 14:32:05.735" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20170828 14:32:05.735" starttime="20170828 14:32:05.732"></status>
+</kw>
+<kw name="Parse Text" library="finder">
+<arguments>
+<arg>${resp.text}</arg>
+</arguments>
+<assign>
+<var>${resp text}</var>
+</assign>
+<msg timestamp="20170828 14:32:05.736" level="INFO">${resp text} = {
+  "count": 3, 
+  "items": [
+    {
+      "cost": 1.2, 
+      "id": 1, 
+      "name": "Service #1"
+    }, 
+    {
+      "cost": 0.35, 
+      "id": 2, 
+      "name": "Service #2"
+    }, 
+    {
+      "co...</msg>
+<status status="PASS" endtime="20170828 14:32:05.736" starttime="20170828 14:32:05.735"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>${200}</arg>
+<arg>Запрос прошел неуспешно, статус-код = ${resp.status_code}. \nПодробнее: ${resp text}</arg>
+<arg>${false}</arg>
+</arguments>
+<msg timestamp="20170828 14:32:05.736" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170828 14:32:05.736" starttime="20170828 14:32:05.736"></status>
+</kw>
+<kw name="Parse Json" library="HttpLibrary.HTTP">
+<doc>Parses the JSON document `json_string` and returns a data structure.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<assign>
+<var>${new_client_services}</var>
+</assign>
+<msg timestamp="20170828 14:32:05.737" level="INFO">${new_client_services} = {u'count': 3, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}]}</msg>
+<status status="PASS" endtime="20170828 14:32:05.737" starttime="20170828 14:32:05.736"></status>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<arguments>
+<arg>${new_client_services['items']}</arg>
+<arg>${needed_service}</arg>
+<arg>Новый сервис не был добавлен</arg>
+</arguments>
+<msg timestamp="20170828 14:32:05.737" level="FAIL">Новый сервис не был добавлен: '[{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}]' does not contain '{u'cost': 0.15, u'id': 4, u'name': u'Service #4'}'</msg>
+<status status="FAIL" endtime="20170828 14:32:05.737" starttime="20170828 14:32:05.737"></status>
+</kw>
+<status status="FAIL" endtime="20170828 14:32:05.737" starttime="20170828 14:32:05.726"></status>
+</kw>
+<kw name="chek_the_addition_of_the_service" library="keywords">
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Проверка добавления нового сервиса</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:32:15.740" starttime="20170828 14:32:15.739"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{header}</var>
+</assign>
+<msg timestamp="20170828 14:32:15.741" level="INFO">&amp;{header} = { Content-Type=application/json }</msg>
+<status status="PASS" endtime="20170828 14:32:15.741" starttime="20170828 14:32:15.740"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>client_id=${client_id}</arg>
+</arguments>
+<assign>
+<var>&amp;{data}</var>
+</assign>
+<msg timestamp="20170828 14:32:15.743" level="INFO">&amp;{data} = { client_id=16 }</msg>
+<status status="PASS" endtime="20170828 14:32:15.743" starttime="20170828 14:32:15.742"></status>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>session</arg>
+<arg>${session}</arg>
+</arguments>
+<msg timestamp="20170828 14:32:15.744" level="INFO">Creating Session using : alias=session, url=http://localhost:5000, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20170828 14:32:15.745" starttime="20170828 14:32:15.744"></status>
+</kw>
+<kw name="Post Request" library="RequestsLibrary">
+<doc>Send a POST request on the session object found using the</doc>
+<arguments>
+<arg>session</arg>
+<arg>/client/services</arg>
+<arg>data=${data}</arg>
+<arg>headers=${header}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20170828 14:32:15.755" level="INFO">Post Request using : alias=session, uri=/client/services, data={"client_id": 16}, headers={u'Content-Type': u'application/json'}, files=None, allow_redirects=True </msg>
+<msg timestamp="20170828 14:32:15.756" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20170828 14:32:15.756" starttime="20170828 14:32:15.746"></status>
+</kw>
+<kw name="Parse Text" library="finder">
+<arguments>
+<arg>${resp.text}</arg>
+</arguments>
+<assign>
+<var>${resp text}</var>
+</assign>
+<msg timestamp="20170828 14:32:15.758" level="INFO">${resp text} = {
+  "count": 3, 
+  "items": [
+    {
+      "cost": 1.2, 
+      "id": 1, 
+      "name": "Service #1"
+    }, 
+    {
+      "cost": 0.35, 
+      "id": 2, 
+      "name": "Service #2"
+    }, 
+    {
+      "co...</msg>
+<status status="PASS" endtime="20170828 14:32:15.758" starttime="20170828 14:32:15.757"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>${200}</arg>
+<arg>Запрос прошел неуспешно, статус-код = ${resp.status_code}. \nПодробнее: ${resp text}</arg>
+<arg>${false}</arg>
+</arguments>
+<msg timestamp="20170828 14:32:15.760" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170828 14:32:15.761" starttime="20170828 14:32:15.758"></status>
+</kw>
+<kw name="Parse Json" library="HttpLibrary.HTTP">
+<doc>Parses the JSON document `json_string` and returns a data structure.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<assign>
+<var>${new_client_services}</var>
+</assign>
+<msg timestamp="20170828 14:32:15.763" level="INFO">${new_client_services} = {u'count': 3, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}]}</msg>
+<status status="PASS" endtime="20170828 14:32:15.763" starttime="20170828 14:32:15.761"></status>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<arguments>
+<arg>${new_client_services['items']}</arg>
+<arg>${needed_service}</arg>
+<arg>Новый сервис не был добавлен</arg>
+</arguments>
+<msg timestamp="20170828 14:32:15.765" level="FAIL">Новый сервис не был добавлен: '[{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}]' does not contain '{u'cost': 0.15, u'id': 4, u'name': u'Service #4'}'</msg>
+<status status="FAIL" endtime="20170828 14:32:15.765" starttime="20170828 14:32:15.763"></status>
+</kw>
+<status status="FAIL" endtime="20170828 14:32:15.765" starttime="20170828 14:32:15.738"></status>
+</kw>
+<kw name="chek_the_addition_of_the_service" library="keywords">
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Проверка добавления нового сервиса</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:32:25.768" starttime="20170828 14:32:25.768"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>Content-Type=application/json</arg>
+</arguments>
+<assign>
+<var>&amp;{header}</var>
+</assign>
+<msg timestamp="20170828 14:32:25.770" level="INFO">&amp;{header} = { Content-Type=application/json }</msg>
+<status status="PASS" endtime="20170828 14:32:25.770" starttime="20170828 14:32:25.768"></status>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<arguments>
+<arg>client_id=${client_id}</arg>
+</arguments>
+<assign>
+<var>&amp;{data}</var>
+</assign>
+<msg timestamp="20170828 14:32:25.772" level="INFO">&amp;{data} = { client_id=16 }</msg>
+<status status="PASS" endtime="20170828 14:32:25.772" starttime="20170828 14:32:25.770"></status>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<doc>Create Session: create a HTTP session to a server</doc>
+<arguments>
+<arg>session</arg>
+<arg>${session}</arg>
+</arguments>
+<msg timestamp="20170828 14:32:25.773" level="INFO">Creating Session using : alias=session, url=http://localhost:5000, headers={},                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20170828 14:32:25.774" starttime="20170828 14:32:25.773"></status>
+</kw>
+<kw name="Post Request" library="RequestsLibrary">
+<doc>Send a POST request on the session object found using the</doc>
+<arguments>
+<arg>session</arg>
+<arg>/client/services</arg>
+<arg>data=${data}</arg>
+<arg>headers=${header}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20170828 14:32:25.819" level="INFO">Post Request using : alias=session, uri=/client/services, data={"client_id": 16}, headers={u'Content-Type': u'application/json'}, files=None, allow_redirects=True </msg>
+<msg timestamp="20170828 14:32:25.819" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20170828 14:32:25.819" starttime="20170828 14:32:25.775"></status>
+</kw>
+<kw name="Parse Text" library="finder">
+<arguments>
+<arg>${resp.text}</arg>
+</arguments>
+<assign>
+<var>${resp text}</var>
+</assign>
+<msg timestamp="20170828 14:32:25.821" level="INFO">${resp text} = {
+  "count": 4, 
+  "items": [
+    {
+      "cost": 1.2, 
+      "id": 1, 
+      "name": "Service #1"
+    }, 
+    {
+      "cost": 0.35, 
+      "id": 2, 
+      "name": "Service #2"
+    }, 
+    {
+      "co...</msg>
+<status status="PASS" endtime="20170828 14:32:25.821" starttime="20170828 14:32:25.820"></status>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${resp.status_code}</arg>
+<arg>${200}</arg>
+<arg>Запрос прошел неуспешно, статус-код = ${resp.status_code}. \nПодробнее: ${resp text}</arg>
+<arg>${false}</arg>
+</arguments>
+<msg timestamp="20170828 14:32:25.823" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170828 14:32:25.824" starttime="20170828 14:32:25.822"></status>
+</kw>
+<kw name="Parse Json" library="HttpLibrary.HTTP">
+<doc>Parses the JSON document `json_string` and returns a data structure.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<assign>
+<var>${new_client_services}</var>
+</assign>
+<msg timestamp="20170828 14:32:25.826" level="INFO">${new_client_services} = {u'count': 4, u'items': [{u'cost': 1.2, u'id': 1, u'name': u'Service #1'}, {u'cost': 0.35, u'id': 2, u'name': u'Service #2'}, {u'cost': 0.15, u'id': 3, u'name': u'Service #3'}, {u'cost': 0.15, u'id': ...</msg>
+<status status="PASS" endtime="20170828 14:32:25.826" starttime="20170828 14:32:25.824"></status>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<arguments>
+<arg>${new_client_services['items']}</arg>
+<arg>${needed_service}</arg>
+<arg>Новый сервис не был добавлен</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:32:25.827" starttime="20170828 14:32:25.826"></status>
+</kw>
+<status status="PASS" endtime="20170828 14:32:25.827" starttime="20170828 14:32:25.766"></status>
+</kw>
+<status status="PASS" endtime="20170828 14:32:25.828" starttime="20170828 14:31:55.717"></status>
+</kw>
+<msg timestamp="20170828 14:32:25.828" level="INFO">${wait} = ('PASS', None)</msg>
+<status status="PASS" endtime="20170828 14:32:25.828" starttime="20170828 14:31:55.717"></status>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<arguments>
+<arg>'${wait[0]}'=='FAIL'</arg>
+<arg>should be true</arg>
+<arg>${False}</arg>
+<arg>Услуга не была подключена</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:32:25.830" starttime="20170828 14:32:25.829"></status>
+</kw>
+<status status="PASS" endtime="20170828 14:32:25.830" starttime="20170828 14:31:55.717"></status>
+</kw>
+<doc>Подключение клиенту еще не подключенной услуги</doc>
+<tags>
+<tag>post</tag>
+<tag>services</tag>
+</tags>
+<status status="PASS" endtime="20170828 14:32:25.830" critical="yes" starttime="20170828 14:31:55.703"></status>
+</test>
+<test id="s1-t6" name="Get Final Balance">
+<kw name="get_balance_of_client" library="keywords">
+<arguments>
+<arg>${client_id}</arg>
+</arguments>
+<assign>
+<var>${final_balance}</var>
+</assign>
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Получение баланса клиента</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:32:25.834" starttime="20170828 14:32:25.834"></status>
+</kw>
+<kw name="Should Not Be Equal" library="BuiltIn">
+<doc>Fails if the given objects are equal.</doc>
+<arguments>
+<arg>${client_id}</arg>
+<arg>${EMPTY}</arg>
+<arg>ID клиента не должен быть пустым</arg>
+<arg>${False}</arg>
+</arguments>
+<msg timestamp="20170828 14:32:25.836" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'str'&gt;</msg>
+<status status="PASS" endtime="20170828 14:32:25.836" starttime="20170828 14:32:25.835"></status>
+</kw>
+<kw name="Query" library="DatabaseLibrary">
+<doc>Uses the input `selectStatement` to query for the values that will be returned as a list of tuples. Set optional</doc>
+<arguments>
+<arg>Select balance from balances where clients_client_id = ${client_id}</arg>
+</arguments>
+<assign>
+<var>${final_balance}</var>
+</assign>
+<msg timestamp="20170828 14:32:25.837" level="INFO">Executing : Query  |  Select balance from balances where clients_client_id = 16 </msg>
+<msg timestamp="20170828 14:32:25.838" level="INFO">${final_balance} = [(3.15,)]</msg>
+<status status="PASS" endtime="20170828 14:32:25.838" starttime="20170828 14:32:25.837"></status>
+</kw>
+<kw name="Return From Keyword" library="BuiltIn">
+<doc>Returns from the enclosing user keyword.</doc>
+<arguments>
+<arg>${final_balance}</arg>
+</arguments>
+<msg timestamp="20170828 14:32:25.839" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" endtime="20170828 14:32:25.839" starttime="20170828 14:32:25.839"></status>
+</kw>
+<msg timestamp="20170828 14:32:25.840" level="INFO">${final_balance} = [(3.15,)]</msg>
+<status status="PASS" endtime="20170828 14:32:25.840" starttime="20170828 14:32:25.833"></status>
+</kw>
+<kw name="Set Global Variable" library="BuiltIn">
+<doc>Makes a variable available globally in all tests and suites.</doc>
+<arguments>
+<arg>${final_balance}</arg>
+<arg>${final_balance[0][0]}</arg>
+</arguments>
+<msg timestamp="20170828 14:32:25.842" level="INFO">${final_balance} = 3.15</msg>
+<status status="PASS" endtime="20170828 14:32:25.842" starttime="20170828 14:32:25.841"></status>
+</kw>
+<kw name="check_balance_change" library="keywords">
+<arguments>
+<arg>${client_balance}</arg>
+<arg>${service_cost}</arg>
+<arg>${final_balance}</arg>
+</arguments>
+<kw name="Comment" library="BuiltIn">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Проверка корректности изменения баланса клиента</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:32:25.845" starttime="20170828 14:32:25.844"></status>
+</kw>
+<kw name="Should Not Be Equal" library="BuiltIn">
+<doc>Fails if the given objects are equal.</doc>
+<arguments>
+<arg>${client_balance}</arg>
+<arg>${EMPTY}</arg>
+<arg>Баланс клиента не должен быть пустым</arg>
+<arg>${False}</arg>
+</arguments>
+<msg timestamp="20170828 14:32:25.846" level="INFO">Argument types are:
+&lt;type 'float'&gt;
+&lt;type 'str'&gt;</msg>
+<status status="PASS" endtime="20170828 14:32:25.846" starttime="20170828 14:32:25.845"></status>
+</kw>
+<kw name="Should Not Be Equal" library="BuiltIn">
+<doc>Fails if the given objects are equal.</doc>
+<arguments>
+<arg>${service_cost}</arg>
+<arg>${EMPTY}</arg>
+<arg>Стоимость услуги не должна быть пустой</arg>
+<arg>${False}</arg>
+</arguments>
+<msg timestamp="20170828 14:32:25.847" level="INFO">Argument types are:
+&lt;type 'float'&gt;
+&lt;type 'str'&gt;</msg>
+<status status="PASS" endtime="20170828 14:32:25.847" starttime="20170828 14:32:25.846"></status>
+</kw>
+<kw name="Should Not Be Equal" library="BuiltIn">
+<doc>Fails if the given objects are equal.</doc>
+<arguments>
+<arg>${final_balance}</arg>
+<arg>${EMPTY}</arg>
+<arg>Баланс клиента не должен быть пустым</arg>
+<arg>${False}</arg>
+</arguments>
+<msg timestamp="20170828 14:32:25.848" level="INFO">Argument types are:
+&lt;type 'float'&gt;
+&lt;type 'str'&gt;</msg>
+<status status="PASS" endtime="20170828 14:32:25.848" starttime="20170828 14:32:25.847"></status>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<doc>Evaluates the given expression in Python and returns the results.</doc>
+<arguments>
+<arg>${client_balance} - ${service_cost}</arg>
+</arguments>
+<assign>
+<var>${difference}</var>
+</assign>
+<msg timestamp="20170828 14:32:25.849" level="INFO">${difference} = 3.15</msg>
+<status status="PASS" endtime="20170828 14:32:25.849" starttime="20170828 14:32:25.849"></status>
+</kw>
+<kw name="Should Be Equal As Numbers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to real numbers.</doc>
+<arguments>
+<arg>${final_balance}</arg>
+<arg>${difference}</arg>
+<arg>Некорректное изменение баланса</arg>
+</arguments>
+<status status="PASS" endtime="20170828 14:32:25.850" starttime="20170828 14:32:25.850"></status>
+</kw>
+<status status="PASS" endtime="20170828 14:32:25.850" starttime="20170828 14:32:25.843"></status>
+</kw>
+<doc>Получение нового баланса клиента</doc>
+<tags>
+<tag>database</tag>
+<tag>get</tag>
+</tags>
+<status status="PASS" endtime="20170828 14:32:25.851" critical="yes" starttime="20170828 14:32:25.831"></status>
+</test>
+<doc>Tests cases for test</doc>
+<status status="PASS" endtime="20170828 14:32:25.851" starttime="20170828 14:31:55.483"></status>
+</suite>
+<statistics>
+<total>
+<stat fail="0" pass="6">Critical Tests</stat>
+<stat fail="0" pass="6">All Tests</stat>
+</total>
+<tag>
+<stat fail="0" pass="1">connect</stat>
+<stat fail="0" pass="2">database</stat>
+<stat fail="0" pass="4">get</stat>
+<stat fail="0" pass="1">post</stat>
+<stat fail="0" pass="4">services</stat>
+</tag>
+<suite>
+<stat fail="0" id="s1" name="Test" pass="6">Test</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
